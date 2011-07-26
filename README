@@ -1,0 +1,8 @@
+== SOULVR
+
+A shell tool for checking your Guardian Soulmates profile. It'll tell you if you have any unread items in your inbox, and also, which items in your outbo are still unread.
+
+= USAGE
+
+* copy creds.yml.sample to creds.yml, and replace the username and password with your own
+* ./soulvr.rb
