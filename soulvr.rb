@@ -6,7 +6,8 @@ require 'yaml'
 require 'open-uri'
 require 'nokogiri'
 
-creds = YAML.load_file("creds.yml")
+current_dir = File.expand_path(File.dirname(__FILE__))
+creds = YAML.load_file("#{current_dir}/creds.yml")
 username, password = creds["user"], creds["password"]
 
 agent = Mechanize.new
