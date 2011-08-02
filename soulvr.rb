@@ -51,12 +51,13 @@ received_messages = inbox_doc.css("ul#mailbox ul.message")
 
 new_messages = received_messages.select do |message|
   img = message.css("li img").first
-  img.attributes["alt"].value == "Unread by them"
+  img.attributes["alt"].value == "You haven't read it"
 end
 
 if new_messages.any?
   new_messages.each do |message|
-    name = message.css("li.correspondents").first.inner_text.strip
+    correspondent_string = message.css("li.correspondents").first.inner_text.strip
+    name= correspondent_string.split(",").first.strip
     puts "#{name} has sent you a new message!"
   end
 else
