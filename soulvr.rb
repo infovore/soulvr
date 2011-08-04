@@ -20,46 +20,53 @@ login_form.password = password
 
 puts "Logging in as #{username}"
 page = agent.submit(login_form)
-puts "Grabbing inbox..."
-inbox = agent.get("https://soulmates.guardian.co.uk/messages/inbox")
-puts "Grabbing outbox..."
-outbox = agent.get("https://soulmates.guardian.co.uk/messages/outbox")
-puts
 
-outbox_doc = Nokogiri::HTML(outbox.body)
-sent_messages = outbox_doc.css("ul#mailbox ul.message")
-
-unopened_messages = sent_messages.select do |message|
-  img = message.css("li img").first
-  img.attributes["alt"].value == "Unread by them"
-end
-
-if unopened_messages.any?
-  unopened_messages.each do |message|
-    name = message.css("li.correspondents").first.inner_text.strip
-    puts "#{name} has not read your message yet."
-  end
+if page.title == "Sign in to Soulmates - Guardian Soulmates"
+  puts
+  puts "Incorrect username or password. Check your creds.yml file, or log in to the website manually."
+  puts
 else
-  puts "No unread messages that you've sent."
-end
+  puts "Grabbing inbox..."
+  inbox = agent.get("https://soulmates.guardian.co.uk/messages/inbox")
+  puts "Grabbing outbox..."
+  outbox = agent.get("https://soulmates.guardian.co.uk/messages/outbox")
+  puts
 
-puts
-puts
+  outbox_doc = Nokogiri::HTML(outbox.body)
+  sent_messages = outbox_doc.css("ul#mailbox ul.message")
 
-inbox_doc = Nokogiri::HTML(inbox.body)
-received_messages = inbox_doc.css("ul#mailbox ul.message")
-
-new_messages = received_messages.select do |message|
-  img = message.css("li img").first
-  img.attributes["alt"].value == "You haven't read it"
-end
-
-if new_messages.any?
-  new_messages.each do |message|
-    correspondent_string = message.css("li.correspondents").first.inner_text.strip
-    name= correspondent_string.split(",").first.strip
-    puts "#{name} has sent you a new message!"
+  unopened_messages = sent_messages.select do |message|
+    img = message.css("li img").first
+    img.attributes["alt"].value == "Unread by them"
   end
-else
-  puts "No new messages in the inbox."
+
+  if unopened_messages.any?
+    unopened_messages.each do |message|
+      name = message.css("li.correspondents").first.inner_text.strip
+      puts "#{name} has not read your message yet."
+    end
+  else
+    puts "No unread messages that you've sent."
+  end
+
+  puts
+  puts
+
+  inbox_doc = Nokogiri::HTML(inbox.body)
+  received_messages = inbox_doc.css("ul#mailbox ul.message")
+
+  new_messages = received_messages.select do |message|
+    img = message.css("li img").first
+    img.attributes["alt"].value == "You haven't read it"
+  end
+
+  if new_messages.any?
+    new_messages.each do |message|
+      correspondent_string = message.css("li.correspondents").first.inner_text.strip
+      name= correspondent_string.split(",").first.strip
+      puts "#{name} has sent you a new message!"
+    end
+  else
+    puts "No new messages in the inbox."
+  end
 end
