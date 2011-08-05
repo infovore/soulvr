@@ -42,7 +42,8 @@ else
 
   if unopened_messages.any?
     unopened_messages.each do |message|
-      name = message.css("li.correspondents").first.inner_text.strip
+      correspondent_string = message.css("li.correspondents").first.inner_text.strip
+      name= correspondent_string.split(",").first.strip
       puts "#{name} has not read your message yet."
     end
   else
