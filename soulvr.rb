@@ -4,10 +4,9 @@ require 'rubygems'
 require 'mechanize'
 require 'yaml'
 require 'open-uri'
-
-require 'lib/mailbox'
-require 'lib/inbox'
-require 'lib/outbox'
+require File.dirname(__FILE__) + '/lib/mailbox'
+require File.dirname(__FILE__) + '/lib/inbox'
+require File.dirname(__FILE__) + '/lib/outbox'
 
 current_dir = File.expand_path(File.dirname(__FILE__))
 creds = YAML.load_file("#{current_dir}/creds.yml")
@@ -46,6 +45,7 @@ else
   inbox_page = agent.get("https://soulmates.guardian.co.uk/messages/inbox")
   
   inbox = Inbox.new(inbox_page.body)
+  
   if inbox.messages_to_display.any?
     inbox.messages_to_display.each {|m| puts m}
   else
