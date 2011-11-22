@@ -22,6 +22,7 @@ begin
   puts "Inbox"
   puts soulmates.inbox.messages_string_formatted
   puts
+  
 rescue SoulmatesLoginError
   puts "Login details incorrect"
 end
