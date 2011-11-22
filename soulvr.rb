@@ -16,20 +16,11 @@ begin
   soulmates = Soulmates.new(username,password)
 
   puts "Outbox:"
-  if soulmates.outbox.messages_to_display.any?
-    soulmates.outbox.messages_to_display.each {|m| puts m}
-  else
-    puts soulmates.outbox.no_match_string
-  end
-  
+  puts soulmates.outbox.messages_string_formatted
   puts
   
   puts "Inbox"
-  if soulmates.inbox.messages_to_display.any?
-    soulmates.inbox.messages_to_display.each {|m| puts m}
-  else
-    puts soulmates.inbox.no_match_string
-  end
+  puts soulmates.inbox.messages_string_formatted
   puts
 rescue SoulmatesLoginError
   puts "Login details incorrect"

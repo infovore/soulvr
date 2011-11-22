@@ -24,4 +24,12 @@ class Mailbox
       end
     end
   end
+  
+  def messages_string_formatted
+    if messages_to_display.any?
+      messages_to_display.join("\n")
+    else
+      no_match_string
+    end
+  end
 end
