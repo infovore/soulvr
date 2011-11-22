@@ -1,55 +1,36 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'mechanize'
 require 'yaml'
-require 'open-uri'
+
 require File.dirname(__FILE__) + '/lib/mailbox'
 require File.dirname(__FILE__) + '/lib/inbox'
 require File.dirname(__FILE__) + '/lib/outbox'
+require File.dirname(__FILE__) + '/lib/soulmates'
 
 current_dir = File.expand_path(File.dirname(__FILE__))
 creds = YAML.load_file("#{current_dir}/creds.yml")
 username, password = creds["user"], creds["password"]
 
-agent = Mechanize.new
+begin
+  soulmates = Soulmates.new(username,password)
 
-page = agent.get("http://soulmates.guardian.co.uk/sign-in")
-
-login_form = page.forms.first
-login_form.username = username
-login_form.password = password
-
-puts "Logging in as #{username}"
-puts
-page = agent.submit(login_form)
-
-if page.title == "Sign in to Soulmates - Guardian Soulmates"
-  puts
-  puts "Incorrect username or password. Check your creds.yml file, or log in to the website manually."
-  puts
-else
-  puts "Getting outbox..."
-  outbox_page = agent.get("https://soulmates.guardian.co.uk/messages/outbox")
-  
-  outbox = Outbox.new(outbox_page.body)
-  if outbox.messages_to_display.any?
-    outbox.messages_to_display.each {|m| puts m}
+  puts "Outbox:"
+  if soulmates.outbox.messages_to_display.any?
+    soulmates.outbox.messages_to_display.each {|m| puts m}
   else
-    puts outbox.no_match_string
+    puts soulmates.outbox.no_match_string
   end
   
   puts
   
-  puts "Getting inbox..."
-  inbox_page = agent.get("https://soulmates.guardian.co.uk/messages/inbox")
-  
-  inbox = Inbox.new(inbox_page.body)
-  
-  if inbox.messages_to_display.any?
-    inbox.messages_to_display.each {|m| puts m}
+  puts "Inbox"
+  if soulmates.inbox.messages_to_display.any?
+    soulmates.inbox.messages_to_display.each {|m| puts m}
   else
-    puts inbox.no_match_string
+    puts soulmates.inbox.no_match_string
   end
   puts
+rescue SoulmatesLoginError
+  puts "Login details incorrect"
 end
