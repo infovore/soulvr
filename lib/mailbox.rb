@@ -20,7 +20,7 @@ class Mailbox
       matching_messages.each do |message|
         correspondent_string = message.css("li.correspondents").first.inner_text.strip
         name = correspondent_string.split(",").first.strip
-        self.messages_to_display << match_string.gsub("£", name)
+        self.messages_to_display << match_string.gsub('~', name)
       end
     end
   end

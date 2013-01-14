@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
-require 'yaml'
+require "rubygems"
+require "bundler/setup"
 
 require File.dirname(__FILE__) + '/lib/mailbox'
 require File.dirname(__FILE__) + '/lib/inbox'
